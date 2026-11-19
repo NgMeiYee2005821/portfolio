@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mei Yee - Portfolio Prototype</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .frame-wrap { aspect-ratio: 16 / 9; }
+  @media (max-width: 768px) {
+    .frame-wrap { aspect-ratio: 3 / 4; }
+  }
+</style>
+</head>
+<body class="bg-neutral-950 text-neutral-100 min-h-screen flex flex-col">
+
+  <header class="px-6 pt-10 pb-6 max-w-6xl mx-auto w-full">
+    <p class="text-xs uppercase tracking-[0.2em] text-neutral-500">Interactive Prototype</p>
+    <h1 class="mt-2 text-3xl md:text-4xl font-semibold tracking-tight">Portfolio</h1>
+    <p class="mt-2 text-sm text-neutral-400">Click through the prototype below. Best viewed on desktop.</p>
+  </header>
+
+  <main class="px-6 pb-10 max-w-6xl mx-auto w-full flex-1">
+    <div class="frame-wrap w-full rounded-xl overflow-hidden border border-neutral-800 bg-neutral-900 shadow-2xl">
+      <iframe
+        id="figma-frame"
+        class="w-full h-full block"
+        style="border: none;"
+        src="https://embed.figma.com/proto/66fDufU24NAkIFMbhm2frI/PORTFOLIO?node-id=9-4601&viewport=2204%2C-370%2C0.54&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=9%3A4601&page-id=0%3A1&embed-host=share"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="mt-4 flex flex-wrap items-center gap-3 text-sm">
+      <a
+        href="https://www.figma.com/proto/66fDufU24NAkIFMbhm2frI/PORTFOLIO?node-id=9-4601"
+        target="_blank"
+        rel="noopener"
+        class="inline-flex items-center gap-2 rounded-lg bg-neutral-100 text-neutral-900 px-4 py-2 font-medium hover:bg-white transition">
+        Open full screen in Figma
+      </a>
+      <button
+        id="reload-btn"
+        class="inline-flex items-center gap-2 rounded-lg border border-neutral-700 px-4 py-2 font-medium text-neutral-300 hover:border-neutral-500 hover:text-white transition">
+        Reload prototype
+      </button>
+    </div>
+  </main>
+
+  <footer class="px-6 py-6 border-t border-neutral-900 text-xs text-neutral-500 max-w-6xl mx-auto w-full">
+    Prototype hosted via Figma embed. If the frame does not load, the source file sharing may be set to restricted.
+  </footer>
+
+<script>
+  document.getElementById('reload-btn').addEventListener('click', function () {
+    var frame = document.getElementById('figma-frame');
+    frame.src = frame.src;
+  });
+</script>
+
+</body>
+</html>
