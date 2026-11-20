@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ng Mei Yee | Strategic Designer</title>
+<meta name="description" content="Ng Mei Yee is a strategic UI/UX designer crafting high-conversion interfaces through behavioral psychology and AI innovation.">
+<meta property="og:title" content="Ng Mei Yee | Strategic Designer">
+<meta property="og:description" content="Crafting high-conversion interfaces through behavioral psychology and AI innovation.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:    '#141414',
+        paper:  '#FBFAF8',
+        accent: '#EE5C24',
+        sun:    '#F5C33B',
+        mute:   '#98A2B3'
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        hand:  ['Caveat', 'cursive']
+      }
+    }
+  }
+}
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; }
+
+  /* Dot grid backdrop behind the hero, rebuilt in CSS rather than shipped as an image */
+  .dotgrid {
+    background-image: radial-gradient(circle, rgba(20,20,20,.13) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%);
+  }
+
+  /* Scroll reveal.
+     Uses the independent `translate` property rather than `transform`, so it
+     composes with Tailwind's rotate/translate utilities instead of wiping them. */
+  .reveal { opacity: 0; translate: 0 26px; transition: opacity .7s cubic-bezier(.22,1,.36,1), translate .7s cubic-bezier(.22,1,.36,1); }
+  .reveal.is-in { opacity: 1; translate: none; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1; translate: none; transition: none; }
+  }
+
+  /* Tape label used for the category markers */
+  .tape {
+    position: relative;
+    display: inline-block;
+    background: #141414;
+    color: #fff;
+    font-family: Caveat, cursive;
+    font-size: 1.6rem;
+    line-height: 1;
+    padding: .55rem 1.5rem .7rem;
+    transform: rotate(-3deg);
+  }
+  .tape::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -26px;
+    width: 34px;
+    height: 17px;
+    transform: translateY(-50%) rotate(-3deg);
+    background: #EE5C24;
+  }
+
+  /* Image slot: shows a labelled placeholder until the real export is dropped in */
+  .slot { position: relative; background: #F1F0ED; overflow: hidden; }
+  .slot img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s cubic-bezier(.22,1,.36,1); }
+  .slot img.missing { display: none; }
+  .slot .slot-hint {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center; text-align: center;
+    font-family: Inter, sans-serif; font-size: .7rem; letter-spacing: .08em;
+    text-transform: uppercase; color: #98A2B3; padding: 1rem;
+  }
+  .slot img.missing ~ .slot-hint { display: flex; }
+  .card:hover .slot img { transform: scale(1.035); }
+
+  /* Ruled notepad for the about block */
+  .ruled {
+    background-color: #FDFCF7;
+    background-image: repeating-linear-gradient(to bottom, transparent 0 31px, rgba(20,20,20,.08) 31px 32px);
+  }
+
+  /* Modal */
+  .modal { opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+  .modal.open { opacity: 1; pointer-events: auto; }
+  .modal .sheet { transform: translateY(18px) scale(.985); transition: transform .35s cubic-bezier(.22,1,.36,1); }
+  .modal.open .sheet { transform: none; }
+  .no-scroll { overflow: hidden; }
+
+  ::selection { background: #EE5C24; color: #fff; }
+</style>
+</head>
+
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ============ NAV ============ -->
+<header id="nav" class="fixed top-0 inset-x-0 z-40 transition-all duration-300">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 flex items-center justify-between h-[72px]">
+    <a href="#top" class="font-hand text-2xl sm:text-[1.7rem] tracking-wide">Ng Mei Yee</a>
+
+    <!-- desktop -->
+    <nav class="hidden md:flex items-stretch gap-0">
+      <a href="#work"    class="nav-pill bg-ink   text-white">Work</a>
+      <a href="#about"   class="nav-pill bg-sun   text-ink">About</a>
+      <a href="#contact" class="nav-pill bg-accent text-white">Contact</a>
+      <a href="assets/Ng-Mei-Yee-Resume.pdf" target="_blank" rel="noopener" class="nav-pill bg-[#C9401A] text-white">Resume</a>
+    </nav>
+
+    <!-- mobile -->
+    <button id="menuBtn" aria-label="Open menu" aria-expanded="false" class="md:hidden w-10 h-10 grid place-content-center">
+      <span class="block w-6 h-[2px] bg-ink mb-[6px]"></span>
+      <span class="block w-6 h-[2px] bg-ink mb-[6px]"></span>
+      <span class="block w-4 h-[2px] bg-ink"></span>
+    </button>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden hidden bg-white border-t border-black/5 shadow-lg">
+    <a href="#work"    class="block px-7 py-4 border-b border-black/5">Work</a>
+    <a href="#about"   class="block px-7 py-4 border-b border-black/5">About</a>
+    <a href="#contact" class="block px-7 py-4 border-b border-black/5">Contact</a>
+    <a href="assets/Ng-Mei-Yee-Resume.pdf" target="_blank" rel="noopener" class="block px-7 py-4 text-accent font-medium">Resume</a>
+  </div>
+</header>
+<style>
+  .nav-pill { display:grid; place-content:center; padding:0 1.6rem; height:53px; font-size:.95rem; font-weight:500; transition:filter .25s ease, transform .25s ease; }
+  .nav-pill:hover { filter:brightness(1.12); }
+  #nav.scrolled { background:rgba(251,250,248,.86); backdrop-filter:blur(12px); box-shadow:0 1px 0 rgba(20,20,20,.07); }
+  #nav.scrolled .nav-pill { height:44px; }
+  #nav.scrolled .max-w-\[1240px\] { height:64px; }
+</style>
+
+<!-- ============ HERO ============ -->
+<section id="top" class="relative pt-[150px] md:pt-[180px] pb-16 md:pb-24 overflow-hidden">
+  <div class="dotgrid absolute inset-0 -z-10"></div>
+
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 text-center">
+    <h1 class="font-serif text-[2.6rem] sm:text-6xl md:text-[4.4rem] leading-[1.05] tracking-tight reveal">
+      Strategic <span class="text-accent italic">Designer</span>
+    </h1>
+    <p class="mt-6 mx-auto max-w-[640px] text-[.95rem] sm:text-base text-ink/70 leading-relaxed reveal" style="transition-delay:.08s">
+      Crafting High-Conversion Interfaces through Behavioral Psychology<br class="hidden sm:block"> &amp; AI Innovation
+    </p>
+
+    <!-- collage -->
+    <div class="mt-14 md:mt-20 flex flex-wrap items-center justify-center gap-5 md:gap-0 md:-space-x-6">
+
+      <article class="reveal w-[260px] bg-sun text-ink p-5 text-left shadow-[0_10px_30px_rgba(20,20,20,.1)] md:rotate-[-7deg] md:translate-y-2 hover:rotate-0 transition-transform duration-500" style="transition-delay:.1s">
+        <h2 class="font-hand text-[1.45rem] mb-2">My Experience</h2>
+        <ul class="text-[.72rem] leading-relaxed space-y-1 list-disc pl-4">
+          <li>Enterprise SaaS platform design</li>
+          <li>Mobile app UI and UX</li>
+          <li>Brand and campaign design</li>
+          <li>Front-end build collaboration</li>
+          <li>AI assisted design workflows</li>
+        </ul>
+      </article>
+
+      <figure class="reveal slot w-[230px] h-[185px] shadow-[0_10px_30px_rgba(20,20,20,.12)] md:rotate-[3deg] hover:rotate-0 transition-transform duration-500 z-10" style="transition-delay:.16s">
+        <img src="assets/hero/portrait.jpg" alt="Ng Mei Yee">
+        <span class="slot-hint">assets/hero/portrait.jpg</span>
+      </figure>
+
+      <article class="reveal w-[250px] bg-ink text-white p-5 text-left shadow-[0_10px_30px_rgba(20,20,20,.18)] md:rotate-[-4deg] md:-translate-y-3 hover:rotate-0 transition-transform duration-500" style="transition-delay:.22s">
+        <h2 class="font-hand text-[1.45rem] mb-2 text-sun">Education</h2>
+        <p class="text-[.72rem] leading-relaxed text-white/80">
+          Universiti Tunku Abdul Rahman (UTAR)<br><br>
+          Bachelor of Arts (Honours)<br>
+          Graphic Design and Multimedia<br><br>
+          Major in Web Design &amp; Development
+        </p>
+      </article>
+
+      <article class="reveal w-[250px] bg-white p-5 text-left border border-black/5 shadow-[0_10px_30px_rgba(20,20,20,.08)] md:rotate-[5deg] md:translate-y-4 hover:rotate-0 transition-transform duration-500" style="transition-delay:.28s">
+        <h2 class="font-hand text-[1.45rem] mb-2">Summary</h2>
+        <p class="text-[.72rem] leading-relaxed text-ink/70">
+          Detail-oriented UI/UX designer with a specialised focus on enterprise and ecommerce platforms. Experienced in turning complex requirements into interfaces that convert.
+        </p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<main id="work" class="max-w-[1240px] mx-auto px-5 sm:px-8 pb-10">
+
+  <!-- ---- Mobile App ---- -->
+  <section class="pt-10 md:pt-16">
+    <div class="reveal mb-9"><span class="tape">Mobile App</span></div>
+    <div class="grid sm:grid-cols-2 gap-6 md:gap-8">
+
+      <article class="card reveal" data-project="daikin-dtc">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/daikin-dtc.png" alt="Daikin DTC mobile app screens">
+          <span class="slot-hint">assets/work/daikin-dtc.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Daikin DTC</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">An all-in-one internal platform for Daikin installers and sales partners to access technical support, manage installations, and participate in performance-boosting sales campaigns.</p>
+      </article>
+
+      <article class="card reveal" data-project="the-daun">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/the-daun.png" alt="The Daun recycling app screens">
+          <span class="slot-hint">assets/work/the-daun.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">The Daun</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A Penang Government initiative designed to digitise waste management by connecting residents directly with recycling collectors. It makes it easier to divert waste from landfills while rewarding users for their green habits.</p>
+      </article>
+
+      <article class="card reveal" data-project="st-community">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/suruhanjaya-tenaga-app.png" alt="Suruhanjaya Tenaga community app screens">
+          <span class="slot-hint">assets/work/suruhanjaya-tenaga-app.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Suruhanjaya Tenaga</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A community app for Suruhanjaya Tenaga staff to stay up to date with everything happening across the organisation, from leadership announcements and policy updates to department news and important notices.</p>
+      </article>
+
+      <article class="card reveal" data-project="app-component">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/app-component.png" alt="App component QR loyalty screens">
+          <span class="slot-hint">assets/work/app-component.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">App Component</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A mobile component that bridges the gap between purchase and profit. By scanning the QR code, users can verify brand integrity, accumulate loyalty points, and extend the resale potential of their items through a smarter, verified ecosystem.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---- SaaS System ---- -->
+  <section class="pt-20 md:pt-28">
+    <div class="reveal mb-9 flex md:justify-end"><span class="tape">SaaS System</span></div>
+    <div class="grid sm:grid-cols-2 gap-6 md:gap-8">
+
+      <article class="card reveal" data-project="tng-disbursement">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/tng-disbursement.png" alt="Touch n Go disbursement dashboard">
+          <span class="slot-hint">assets/work/tng-disbursement.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Touch n' Go Disbursement</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A disbursement system that allows administrators to manage and automate digital payouts directly to users' TNG eWallets, transforming how organisations handle rewards, incentives, and financial aid.</p>
+      </article>
+
+      <article class="card reveal" data-project="smart-blasting">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/smart-blasting.png" alt="Smart Blasting messaging dashboard">
+          <span class="slot-hint">assets/work/smart-blasting.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Smart Blasting</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">Smart Blasting empowers business owners to drive lasting customer loyalty by delivering personalised ads and vital announcements directly to their audience through high-impact, automated messaging channels.</p>
+      </article>
+
+      <article class="card reveal" data-project="st-portal">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/suruhanjaya-tenaga-portal.png" alt="Suruhanjaya Tenaga admin portal">
+          <span class="slot-hint">assets/work/suruhanjaya-tenaga-portal.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Suruhanjaya Tenaga</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">The admin portal serves as the centralised command centre for the community app, giving administrators control over user oversight, content moderation, and report management to keep the ecosystem secure and thriving.</p>
+      </article>
+
+      <article class="card reveal" data-project="deloitte">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/deloitte.png" alt="Deloitte internal assessment portal">
+          <span class="slot-hint">assets/work/deloitte.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Deloitte</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">An internal assessment portal that empowers department leaders to evaluate team performance through a centralised dashboard, allowing real-time observation of member progress and streamlined professional development.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---- Web Design ---- -->
+  <section class="pt-20 md:pt-28">
+    <div class="reveal mb-9"><span class="tape">Web Design</span></div>
+    <div class="grid sm:grid-cols-2 gap-6 md:gap-8">
+
+      <article class="card reveal" data-project="raya-airways">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/raya-airways.png" alt="Raya Airways website">
+          <span class="slot-hint">assets/work/raya-airways.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Raya Airways</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">Designed as a central information hub, this website helps users quickly find cargo flight schedules in their region and showcases Raya Airways' fleet to highlight the company's potential to investors.</p>
+      </article>
+
+      <article class="card reveal" data-project="apeak-gaming">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/apeak-gaming.png" alt="Apeak Gaming ecommerce website">
+          <span class="slot-hint">assets/work/apeak-gaming.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Apeak Gaming</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A customised ecommerce platform designed to give gamers a seamless experience when purchasing new titles and topping up in-game credits instantly.</p>
+      </article>
+
+      <article class="card reveal" data-project="dina-travel">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/dina-travel.png" alt="Dina Travel website">
+          <span class="slot-hint">assets/work/dina-travel.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Dina Travel</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A seamless digital travel hub where users can browse exclusive packages, secure bookings, and collaborate on custom itineraries for their perfect getaway.</p>
+      </article>
+
+      <article class="card reveal" data-project="encompass">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/encompass.png" alt="Encompass beauty storefront website">
+          <span class="slot-hint">assets/work/encompass.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Encompass</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A sophisticated digital storefront that highlights high-end beauty brands and features an intuitive store locator to help customers find authentic products at nearby locations.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---- Branding ---- -->
+  <section class="pt-20 md:pt-28">
+    <div class="reveal mb-9 flex md:justify-end"><span class="tape">Branding</span></div>
+    <div class="grid sm:grid-cols-2 gap-6 md:gap-8">
+
+      <article class="card reveal" data-project="beshop">
+        <div class="slot aspect-[4/3] rounded-sm bg-white border border-black/5">
+          <img src="assets/work/beshop-logo.png" alt="Beshop app logo" class="!object-contain p-10">
+          <span class="slot-hint">assets/work/beshop-logo.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Beshop - App Logo</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A mobile commerce solution designed to convert existing WooCommerce websites into native mobile applications for iOS and Android.</p>
+      </article>
+
+      <article class="card reveal" data-project="jaxer-logo">
+        <div class="slot aspect-[4/3] rounded-sm bg-white border border-black/5">
+          <img src="assets/work/jaxer-logo.png" alt="Jaxer company logo" class="!object-contain p-10">
+          <span class="slot-hint">assets/work/jaxer-logo.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Jaxer - Company Logo</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A Malaysian technology consulting firm and digital solutions provider.</p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ---- Graphic ---- -->
+  <section class="pt-20 md:pt-28">
+    <div class="reveal mb-9"><span class="tape">Graphic</span></div>
+    <div class="grid sm:grid-cols-2 gap-6 md:gap-8">
+
+      <article class="card reveal" data-project="veecotech-hiring-1">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/veecotech-hiring-1.png" alt="VeecoTech hiring carousel post">
+          <span class="slot-hint">assets/work/veecotech-hiring-1.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">VeecoTech - Hiring Post</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A hiring carousel post for social media.</p>
+      </article>
+
+      <article class="card reveal" data-project="veecotech-hiring-2">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/veecotech-hiring-2.png" alt="VeecoTech second hiring carousel post">
+          <span class="slot-hint">assets/work/veecotech-hiring-2.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">VeecoTech - Hiring Post 2</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A hiring carousel post for social media.</p>
+      </article>
+
+      <article class="card reveal" data-project="mynext">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/mynext.png" alt="mynext social media carousel post">
+          <span class="slot-hint">assets/work/mynext.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">mynext - Social Media Post</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A carousel post for social media.</p>
+      </article>
+
+      <article class="card reveal" data-project="indrive">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/indrive.gif" alt="inDrive app animation">
+          <span class="slot-hint">assets/work/indrive.gif</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">inDrive - App Animation</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">Animated GIFs created to increase user engagement inside the inDrive app.</p>
+      </article>
+
+      <article class="card reveal" data-project="jaxer-brochure">
+        <div class="slot aspect-[4/3] rounded-sm">
+          <img src="assets/work/jaxer-brochure.png" alt="Jaxer company brochure">
+          <span class="slot-hint">assets/work/jaxer-brochure.png</span>
+        </div>
+        <h3 class="mt-5 text-[1.05rem] font-semibold">Jaxer - Company Brochure</h3>
+        <p class="mt-2 text-[.82rem] leading-relaxed text-ink/60">A company brochure designed to introduce Jaxer to potential investors.</p>
+      </article>
+
+    </div>
+  </section>
+</main>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-24 md:pt-36 pb-10">
+  <div class="grid md:grid-cols-[1.25fr_1fr] gap-10 md:gap-16 items-center">
+
+    <div class="ruled reveal border border-black/10 shadow-[0_14px_40px_rgba(20,20,20,.07)] p-7 sm:p-10">
+      <ol class="space-y-7">
+        <li>
+          <h3 class="text-accent font-semibold text-[.98rem]">Foqcus Sdn Bhd <span class="text-ink/40 font-normal">| UI/UX Designer</span></h3>
+          <ul class="mt-2 text-[.8rem] leading-[2rem] text-ink/70 list-disc pl-5">
+            <li><strong class="font-semibold text-ink">Core Design:</strong> crafting mobile and portal UI/UX.</li>
+            <li><strong class="font-semibold text-ink">Dev Collaboration:</strong> bridging design and code to deliver functional software solutions.</li>
+          </ul>
+        </li>
+        <li>
+          <h3 class="text-accent font-semibold text-[.98rem]">VeecoTech Solutions <span class="text-ink/40 font-normal">| Graphic &amp; Web Designer</span></h3>
+          <ul class="mt-2 text-[.8rem] leading-[2rem] text-ink/70 list-disc pl-5">
+            <li><strong class="font-semibold text-ink">Elite Portfolio:</strong> delivered 200+ projects for brands including Deloitte, Sunway, and Daikin.</li>
+          </ul>
+        </li>
+        <li>
+          <h3 class="text-accent font-semibold text-[.98rem]">Dasher Malaysia <span class="text-ink/40 font-normal">| Customer Service Agent</span></h3>
+          <ul class="mt-2 text-[.8rem] leading-[2rem] text-ink/70 list-disc pl-5">
+            <li><strong class="font-semibold text-ink">User Support:</strong> managed high-volume sales and inquiries on Shopee, Lazada, and TikTok.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+
+    <div class="reveal text-center md:text-left" style="transition-delay:.1s">
+      <p class="font-hand text-accent text-[4rem] sm:text-[5.2rem] leading-[.85] -rotate-2">About<br><span class="md:ml-16">me</span></p>
+      <h2 class="mt-8 font-serif text-2xl sm:text-3xl">My Working Experience</h2>
+      <p class="mt-2 text-ink/50 text-lg">2020 - 2026</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section id="contact" class="pt-24 md:pt-36 pb-24 md:pb-32 text-center px-5">
+  <h2 class="reveal font-serif text-[2.8rem] sm:text-6xl md:text-[4.6rem] leading-none">Thank You</h2>
+  <div class="reveal mt-8 inline-block -rotate-2" style="transition-delay:.08s">
+    <a href="mailto:myee.ng.2000@gmail.com?subject=Let%27s%20work%20together"
+       class="block bg-accent text-white font-hand text-[1.6rem] sm:text-[1.9rem] leading-tight px-7 py-3 hover:bg-ink transition-colors duration-300">
+      Looking Forward to<br>Work with You!
+    </a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-white">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-16 md:py-24 grid md:grid-cols-2 gap-12">
+
+    <div class="space-y-7 text-[.86rem]">
+      <div>
+        <p class="text-white/40 text-[.72rem] uppercase tracking-[.16em] mb-1">Email</p>
+        <a href="mailto:myee.ng.2000@gmail.com" class="hover:text-accent transition-colors break-all">myee.ng.2000@gmail.com</a>
+      </div>
+      <div>
+        <p class="text-white/40 text-[.72rem] uppercase tracking-[.16em] mb-1">Phone</p>
+        <a href="tel:+601172751982" class="hover:text-accent transition-colors">+6011-7275 1982</a>
+      </div>
+      <div class="space-y-2 pt-2">
+        <a href="https://www.linkedin.com/in/mei-yee-ng-45083426a" target="_blank" rel="noopener" class="block text-white/70 hover:text-accent transition-colors break-all">www.linkedin.com/in/mei-yee-ng-45083426a</a>
+        <a href="https://www.behance.net/ngmeiyee" target="_blank" rel="noopener" class="block text-white/70 hover:text-accent transition-colors break-all">www.behance.net/ngmeiyee</a>
+        <a href="https://www.instagram.com/nmy_234/" target="_blank" rel="noopener" class="block text-white/70 hover:text-accent transition-colors break-all">www.instagram.com/nmy_234</a>
+      </div>
+    </div>
+
+    <div class="md:text-right self-end">
+      <p class="text-white/50 text-[.9rem]">Warm Regards,</p>
+      <p class="font-hand text-[3rem] sm:text-[3.6rem] leading-tight mt-1">Ng Mei Yee</p>
+    </div>
+
+  </div>
+  <div class="border-t border-white/10">
+    <p class="max-w-[1240px] mx-auto px-5 sm:px-8 py-5 text-[.72rem] text-white/35">&copy; <span id="year"></span> Ng Mei Yee. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- ============ MODAL ============ -->
+<div id="modal" class="modal fixed inset-0 z-50 bg-ink/80 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="absolute inset-0" data-close></div>
+
+  <div class="sheet relative mx-auto my-6 sm:my-10 w-[min(1100px,92vw)] h-[calc(100%-3rem)] sm:h-[calc(100%-5rem)] bg-paper shadow-2xl flex flex-col">
+    <header class="flex items-start justify-between gap-6 px-6 sm:px-9 py-5 border-b border-black/8 shrink-0">
+      <div>
+        <h2 id="modalTitle" class="font-serif text-xl sm:text-2xl"></h2>
+        <p id="modalDesc" class="mt-1 text-[.8rem] text-ink/55 max-w-[640px] leading-relaxed"></p>
+      </div>
+      <button data-close aria-label="Close" class="shrink-0 w-10 h-10 grid place-content-center text-2xl leading-none hover:text-accent transition-colors">&times;</button>
+    </header>
+
+    <div id="modalBody" class="overflow-y-auto grow px-6 sm:px-9 py-8 space-y-6"></div>
+
+    <footer class="shrink-0 border-t border-black/8 px-6 sm:px-9 py-3 text-center text-[.7rem] uppercase tracking-[.14em] text-mute">
+      Click background or press Esc to close
+    </footer>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---- year ---- */
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---- nav state ---- */
+  var nav = document.getElementById('nav');
+  var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 24); };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* ---- mobile menu ---- */
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  menuBtn.addEventListener('click', function () {
+    var open = mobileMenu.classList.toggle('hidden') === false;
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      mobileMenu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* ---- scroll reveal ---- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  /* ---- graceful image placeholders ---- */
+  document.querySelectorAll('.slot img').forEach(function (img) {
+    var fail = function () { img.classList.add('missing'); };
+    img.addEventListener('error', fail);
+    if (img.complete && img.naturalWidth === 0) fail();
+  });
+
+  /* ----------------------------------------------------------
+     CASE STUDIES
+     Each key matches a card's data-project value.
+     images: long screenshots exported from the Figma popup frames,
+     stacked vertically inside the modal.
+     Add or remove entries freely; a card with no entry here simply
+     does not open a modal.
+  ---------------------------------------------------------- */
+  var CASES = {
+    'st-portal': {
+      images: [
+        'assets/case/suruhanjaya-tenaga/01-login.png',
+        'assets/case/suruhanjaya-tenaga/02-dashboard.png',
+        'assets/case/suruhanjaya-tenaga/03-user-management.png',
+        'assets/case/suruhanjaya-tenaga/04-add-new-user.png',
+        'assets/case/suruhanjaya-tenaga/05-roles.png',
+        'assets/case/suruhanjaya-tenaga/06-view-roles.png',
+        'assets/case/suruhanjaya-tenaga/07-content-management.png',
+        'assets/case/suruhanjaya-tenaga/08-view-content.png'
+      ]
+    },
+    'raya-airways': {
+      images: [
+        'assets/case/raya-airways/01-home.png',
+        'assets/case/raya-airways/02-about-us.png',
+        'assets/case/raya-airways/03-ground-operations.png',
+        'assets/case/raya-airways/04-our-fleet.png'
+      ]
+    }
+  };
+
+  /* ---- modal ---- */
+  var modal     = document.getElementById('modal');
+  var modalBody = document.getElementById('modalBody');
+  var mTitle    = document.getElementById('modalTitle');
+  var mDesc     = document.getElementById('modalDesc');
+  var lastFocus = null;
+
+  function openModal(card) {
+    var key = card.getAttribute('data-project');
+    var data = CASES[key];
+    if (!data) return;
+
+    lastFocus = document.activeElement;
+    mTitle.textContent = card.dataset.title || card.querySelector('h3').textContent;
+    mDesc.textContent  = card.querySelector('p').textContent;
+
+    modalBody.innerHTML = '';
+    modalBody.scrollTop = 0;
+    data.images.forEach(function (src) {
+      var fig = document.createElement('figure');
+      fig.className = 'slot';
+      var img = document.createElement('img');
+      img.src = src;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.className = 'w-full h-auto shadow-sm';
+      img.addEventListener('error', function () {
+        fig.className = 'border border-dashed border-black/15 py-10 text-center text-[.7rem] uppercase tracking-[.1em] text-mute';
+        fig.textContent = src;
+      });
+      fig.appendChild(img);
+      modalBody.appendChild(fig);
+    });
+
+    modal.classList.add('open');
+    document.body.classList.add('no-scroll');
+    modal.querySelector('[data-close]').focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.classList.remove('no-scroll');
+    setTimeout(function () { modalBody.innerHTML = ''; }, 300);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  document.querySelectorAll('.card').forEach(function (card) {
+    if (!CASES[card.getAttribute('data-project')]) return;
+    card.classList.add('cursor-pointer', 'group');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.addEventListener('click', function () { openModal(card); });
+    card.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(card); }
+    });
+    // capture the clean title before the hover badge is appended into the heading
+    card.dataset.title = card.querySelector('h3').textContent.trim();
+    var badge = document.createElement('span');
+    badge.className = 'ml-2 align-middle text-[.62rem] uppercase tracking-[.12em] text-accent opacity-0 group-hover:opacity-100 transition-opacity';
+    badge.textContent = 'View';
+    card.querySelector('h3').appendChild(badge);
+  });
+
+  modal.querySelectorAll('[data-close]').forEach(function (el) {
+    el.addEventListener('click', closeModal);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+})();
+</script>
+
+</body>
+</html>
